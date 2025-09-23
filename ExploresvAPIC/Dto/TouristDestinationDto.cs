@@ -1,6 +1,6 @@
 ﻿namespace ExploresvAPIC.Dto
 {
-    public record touristDestinationDto
+    public record TouristDestinationDto
     (
         int Id,
         string Title,

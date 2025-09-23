@@ -2,7 +2,6 @@
 {
     public record CreateImageDto
     (
-        int id,
         byte[] Datos
     );
 }
