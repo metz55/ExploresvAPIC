@@ -18,8 +18,12 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Folder Include="Dto\ImageDto\" />
+    <Folder Include="Dto\EventDto\" />
+    <Folder Include="Dto\FavoriteDto\" />
+    <Folder Include="Dto\TouristDestinationDto\" />
+    <Folder Include="Dto\UserDto\" />
     <Folder Include="Endpoints\" />
-    <Folder Include="Dto\" />
   </ItemGroup>
 
 </Project>
