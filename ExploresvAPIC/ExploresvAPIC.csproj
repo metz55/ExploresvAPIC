@@ -19,6 +19,7 @@
 
   <ItemGroup>
     <Folder Include="Endpoints\" />
+    <Folder Include="Dto\" />
   </ItemGroup>
 
 </Project>
