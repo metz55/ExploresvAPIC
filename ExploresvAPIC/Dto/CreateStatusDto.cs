@@ -1,6 +1,6 @@
 ﻿namespace ExploresvAPIC.Dto
 {
-    public class CreateStatusDto
+    public record CreateStatusDto
     (
         string Name
     );

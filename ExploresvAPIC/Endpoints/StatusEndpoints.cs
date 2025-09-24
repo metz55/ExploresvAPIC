@@ -1,6 +1,55 @@
-﻿namespace ExploresvAPIC.Endpoints
+﻿using ExploresvAPIC.Data;
+using ExploresvAPIC.Dto;
+using ExploresvAPIC.Models;
+using Microsoft.EntityFrameworkCore;
+
+namespace ExploresvAPIC.Endpoints
 {
-    public class StatusEndpoints
+    public static class StatusEndpoints
     {
+        public static void Add(this IEndpointRouteBuilder routes)
+        {
+            var group = routes.MapGroup("/api/statuses").WithTags("Statuses");
+
+            group.MapPost("/", async (ExploreDb db, CreateStatusDto dto) =>
+            {
+                var errores = new Dictionary<string, string[]>();
+
+                if (string.IsNullOrWhiteSpace(dto.Name))
+                    errores["status"] = ["El nombre de estado es requerido."];
+
+                if (errores.Count > 0) return Results.ValidationProblem(errores);
+
+                var entity = new Status
+                {
+                    Name = dto.Name
+                };
+
+                //Debe ser Statuses y no Status segun BibliotecaDb
+                db.Status.Add(entity);
+                await db.SaveChangesAsync();
+
+                var dtoSalida = new StatusDto(
+                    entity.Id,
+                    entity.Name);
+
+                return Results.Created($"/statuses/{entity.Id}", dtoSalida);
+            });
+
+            group.MapGet("/", async (ExploreDb db) => {
+
+                //Debe ser Statuses y no Status segun BibliotecaDb
+                var consulta = await db.Status.ToListAsync();
+
+                var statuses = consulta.Select(l => new StatusDto(
+                    l.Id,
+                    l.Name
+                ))
+                .OrderBy(l => l.Name)
+                .ToList();
+
+                return Results.Ok(statuses);
+            });
+        }
     }
 }
