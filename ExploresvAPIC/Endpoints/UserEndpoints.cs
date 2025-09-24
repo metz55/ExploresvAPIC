@@ -27,8 +27,6 @@ namespace ExploresvAPIC.Endpoints
                 if (string.IsNullOrWhiteSpace(dto.Clave))
                     errores["clave"] = ["LA clave es requerida."];
 
-                if (errores.Count > 0) return Results.ValidationProblem(errores);
-
                 var entity = new User
                 {
                     Name = dto.Name,
@@ -46,11 +44,12 @@ namespace ExploresvAPIC.Endpoints
                     entity.Apellido,
                     entity.Email,
                     entity.Clave,
-                    entity.RoleId); //Revisar si esto esta bien
+                    default); //Revisar si esto esta bien
 
                 return Results.Created($"/users/{entity.Id}", dtoSalida);
             });
 
+            //Obtener todos
             group.MapGet("/", async (ExploreDb db) => {
 
                 var consulta = await db.Users.ToListAsync();
@@ -61,12 +60,45 @@ namespace ExploresvAPIC.Endpoints
                     l.Apellido,
                     l.Email,
                     l.Clave,
-                    l.RoleId
+                    default
                 ))
                 .OrderBy(l => l.Name)
                 .ToList();
 
                 return Results.Ok(users);
+            });
+
+            //Obtener por ID
+            group.MapGet("/{id}", async (int id, ExploreDb db) =>
+            {
+                var user = await db.Users
+                .Where(l => l.Id == id)
+                    .Select(l => new UserDto(
+                        l.Id,
+                        l.Name,
+                        l.Apellido,
+                        l.Email,
+                        l.Clave,
+                        default
+                    ))
+                    .FirstOrDefaultAsync();
+                return Results.Ok(user);
+            });
+
+            //Actualizar o modificar
+            group.MapPut("/{id}", async (int id, ModifyUserDto dto, ExploreDb db) => {
+                var user = await db.Users.FindAsync(id);
+                if (user is null)
+                    return Results.NotFound();
+
+                user.Name = dto.Name;
+                user.Apellido = dto.Apellido;
+                user.Email = dto.Email;
+                user.Clave = dto.Clave;
+
+                await db.SaveChangesAsync();
+
+                return Results.NoContent();
             });
         }
     }

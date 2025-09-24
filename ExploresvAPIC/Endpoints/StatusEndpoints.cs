@@ -16,9 +16,7 @@ namespace ExploresvAPIC.Endpoints
                 var errores = new Dictionary<string, string[]>();
 
                 if (string.IsNullOrWhiteSpace(dto.Name))
-                    errores["status"] = ["El nombre de estado es requerido."];
-
-                if (errores.Count > 0) return Results.ValidationProblem(errores);
+                    errores["name"] = ["El nombre de estado es requerido."];
 
                 var entity = new Status
                 {
@@ -36,6 +34,7 @@ namespace ExploresvAPIC.Endpoints
                 return Results.Created($"/statuses/{entity.Id}", dtoSalida);
             });
 
+            //Obtener todos
             group.MapGet("/", async (ExploreDb db) => {
 
                 //Debe ser Statuses y no Status segun BibliotecaDb
@@ -49,6 +48,19 @@ namespace ExploresvAPIC.Endpoints
                 .ToList();
 
                 return Results.Ok(statuses);
+            });
+
+            //Obtener por ID
+            group.MapGet("/{id}", async (int id, ExploreDb db) =>
+            {
+                var status = await db.Status //db.Statuses debe ser
+                .Where(l => l.Id == id)
+                    .Select(l => new StatusDto(
+                        l.Id,
+                        l.Name
+                    ))
+                    .FirstOrDefaultAsync();
+                return Results.Ok(status);
             });
         }
     }
