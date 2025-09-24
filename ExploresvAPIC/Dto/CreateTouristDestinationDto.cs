@@ -2,7 +2,6 @@
 {
     public record CreateTouristDestinationDto
     (
-        int Id,
         string Title,
         string Description,
         string Location,
