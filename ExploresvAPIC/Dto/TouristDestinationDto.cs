@@ -10,7 +10,7 @@
         int CategoryId,
         int DepartmentId,
         int StatusId,
-        int Images,
+        List<ImageDto> Images,
         int EventId
     );
 }
