@@ -27,10 +27,18 @@ namespace ExploresvAPIC.Endpoints
                 if (string.IsNullOrWhiteSpace(dto.Clave))
                     errores["clave"] = ["LA clave es requerida."];
 
+                if (errores.Count > 0)
+                    return Results.BadRequest(errores);
+
                 //Validar si el role existe
                 var role = await db.Roles.FindAsync(dto.RoleId);
                 if (role is null)
                     return Results.BadRequest(new { error = "El rol especificado no existe." });
+
+                //Validar Status "1"
+                var status = await db.Status.FindAsync(1);
+                if (status is null)
+                    return Results.BadRequest(new { error = "El status por defecto no existe en la BD." });
 
                 var entity = new User
                 {
@@ -38,7 +46,8 @@ namespace ExploresvAPIC.Endpoints
                     Apellido = dto.Apellido,
                     Email = dto.Email,
                     Clave = dto.Clave,
-                    RoleId = dto.RoleId
+                    RoleId = dto.RoleId,
+                    StatusId = 1 //Activo por defecto
                 };
 
                 db.Users.Add(entity);
@@ -51,7 +60,9 @@ namespace ExploresvAPIC.Endpoints
                     entity.Email,
                     entity.Clave,
                     entity.RoleId,
-                    role.Name);
+                    role.Name,
+                    entity.StatusId,
+                    status.Name);
 
                 return Results.Created($"/users/{entity.Id}", dtoSalida);
             });
@@ -61,6 +72,7 @@ namespace ExploresvAPIC.Endpoints
 
                 var consulta = await db.Users
                     .Include(u => u.Role)
+                    .Include(u => u.Status)
                     .ToListAsync();
 
                 var users = consulta.Select(l => new UserDto(
@@ -70,7 +82,9 @@ namespace ExploresvAPIC.Endpoints
                     l.Email,
                     l.Clave,
                     l.RoleId,
-                    l.Role != null ? l.Role.Name : ""
+                    l.Role != null ? l.Role.Name : "",
+                    l.StatusId,
+                    l.Status != null ? l.Status.Name : ""
                 ))
                 .OrderBy(l => l.Name)
                 .ToList();
@@ -83,6 +97,7 @@ namespace ExploresvAPIC.Endpoints
             {
                 var user = await db.Users
                     .Include(u => u.Role)
+                    .Include(u => u.Status)
                     .Where(l => l.Id == id)
                     .Select(l => new UserDto(
                         l.Id,
@@ -91,14 +106,16 @@ namespace ExploresvAPIC.Endpoints
                         l.Email,
                         l.Clave,
                         l.RoleId,
-                        l.Role != null ? l.Role.Name : ""
+                        l.Role != null ? l.Role.Name : "",
+                        l.StatusId,
+                        l.Status != null ? l.Status.Name : ""
                     ))
                     .FirstOrDefaultAsync();
 
                 return user is not null ? Results.Ok(user) : Results.NotFound();
             });
 
-            //Actualizar role
+            //Actualizar User
             group.MapPut("/{id}", async (int id, ModifyUserDto dto, ExploreDb db) => {
                 var user = await db.Users.FindAsync(id);
                 if (user is null)
@@ -109,11 +126,17 @@ namespace ExploresvAPIC.Endpoints
                 if (role is null)
                     return Results.BadRequest(new { error = "El rol especificado no existe." });
 
+                // Validar si status existe
+                var status = await db.Status.FindAsync(dto.StatusId);
+                if (status is null)
+                    return Results.BadRequest(new { error = "El status especificado no existe." });
+
                 user.Name = dto.Name;
                 user.Apellido = dto.Apellido;
                 user.Email = dto.Email;
                 user.Clave = dto.Clave;
                 user.RoleId = dto.RoleId;
+                user.StatusId = dto.StatusId;
 
                 await db.SaveChangesAsync();
 
