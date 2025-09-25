@@ -27,12 +27,18 @@ namespace ExploresvAPIC.Endpoints
                 if (string.IsNullOrWhiteSpace(dto.Clave))
                     errores["clave"] = ["LA clave es requerida."];
 
+                //Validar si el role existe
+                var role = await db.Roles.FindAsync(dto.RoleId);
+                if (role is null)
+                    return Results.BadRequest(new { error = "El rol especificado no existe." });
+
                 var entity = new User
                 {
                     Name = dto.Name,
                     Apellido = dto.Apellido,
                     Email = dto.Email,
-                    Clave = dto.Clave
+                    Clave = dto.Clave,
+                    RoleId = dto.RoleId
                 };
 
                 db.Users.Add(entity);
@@ -44,15 +50,18 @@ namespace ExploresvAPIC.Endpoints
                     entity.Apellido,
                     entity.Email,
                     entity.Clave,
-                    default); //Revisar si esto esta bien
+                    entity.RoleId,
+                    role.Name);
 
                 return Results.Created($"/users/{entity.Id}", dtoSalida);
             });
 
-            //Obtener todos
+            //Obtener todos los Usuarios
             group.MapGet("/", async (ExploreDb db) => {
 
-                var consulta = await db.Users.ToListAsync();
+                var consulta = await db.Users
+                    .Include(u => u.Role)
+                    .ToListAsync();
 
                 var users = consulta.Select(l => new UserDto(
                     l.Id,
@@ -60,7 +69,8 @@ namespace ExploresvAPIC.Endpoints
                     l.Apellido,
                     l.Email,
                     l.Clave,
-                    default
+                    l.RoleId,
+                    l.Role != null ? l.Role.Name : ""
                 ))
                 .OrderBy(l => l.Name)
                 .ToList();
@@ -68,33 +78,42 @@ namespace ExploresvAPIC.Endpoints
                 return Results.Ok(users);
             });
 
-            //Obtener por ID
+            //Obtener role por ID
             group.MapGet("/{id}", async (int id, ExploreDb db) =>
             {
                 var user = await db.Users
-                .Where(l => l.Id == id)
+                    .Include(u => u.Role)
+                    .Where(l => l.Id == id)
                     .Select(l => new UserDto(
                         l.Id,
                         l.Name,
                         l.Apellido,
                         l.Email,
                         l.Clave,
-                        default
+                        l.RoleId,
+                        l.Role != null ? l.Role.Name : ""
                     ))
                     .FirstOrDefaultAsync();
-                return Results.Ok(user);
+
+                return user is not null ? Results.Ok(user) : Results.NotFound();
             });
 
-            //Actualizar o modificar
+            //Actualizar role
             group.MapPut("/{id}", async (int id, ModifyUserDto dto, ExploreDb db) => {
                 var user = await db.Users.FindAsync(id);
                 if (user is null)
                     return Results.NotFound();
 
+                //Validar si role existe
+                var role = await db.Roles.FindAsync(dto.RoleId);
+                if (role is null)
+                    return Results.BadRequest(new { error = "El rol especificado no existe." });
+
                 user.Name = dto.Name;
                 user.Apellido = dto.Apellido;
                 user.Email = dto.Email;
                 user.Clave = dto.Clave;
+                user.RoleId = dto.RoleId;
 
                 await db.SaveChangesAsync();
 
