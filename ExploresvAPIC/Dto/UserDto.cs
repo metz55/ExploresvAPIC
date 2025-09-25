@@ -8,6 +8,8 @@
         string Email,
         string Clave,
         int RoleId,
-        string RoleName
+        string RoleName,
+        int StatusId,
+        string StatusName
     );
 }
