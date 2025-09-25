@@ -6,6 +6,14 @@
         string Description,
         string Location,
         string Hours,
-        List<ImageDto> Images
+        int CategoryId,
+        int DepartmentId,
+        string DepartmentName,
+        int StatusId,
+        string StatusName,
+        List<ImageDto> Images,
+        int EventId
+
+
     );
 }

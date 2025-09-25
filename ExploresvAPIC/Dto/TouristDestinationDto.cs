@@ -9,7 +9,9 @@
         string Hours,
         int CategoryId,
         int DepartmentId,
+        string DepartmentName,
         int StatusId,
+        string StatusName,
         List<ImageDto> Images,
         int EventId
     );
