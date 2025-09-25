@@ -7,19 +7,17 @@ namespace ExploresvAPIC.Endpoints
 {
     public static class RoleEndpoints
     {
-        public static void Add(IEndpointRouteBuilder routes)
+        public static void Add(this IEndpointRouteBuilder routes)
         {
             var group = routes.MapGroup("/api/roles").WithTags("Roles");
 
-            // Crear un nuevo rol
+            //Crear un nuevo role
             group.MapPost("/", async (ExploreDb db, CreateRoleDto dto) =>
             {
                 var errores = new Dictionary<string, string[]>();
+
                 if (string.IsNullOrWhiteSpace(dto.Name))
                     errores["name"] = ["El nombre del rol es requerido."];
-
-                if (errores.Count > 0)
-                    return Results.BadRequest(errores);
 
                 var entity = new Role
                 {
@@ -36,72 +34,32 @@ namespace ExploresvAPIC.Endpoints
                 return Results.Created($"/roles/{entity.Id}", dtoSalida);
             });
 
-            // Obtener todos los roles
+            //Obtener todos los roles
             group.MapGet("/", async (ExploreDb db) =>
             {
-                var roles = await db.Roles
-                    .Select(r => new RoleDto(
-                        r.Id,
-                        r.Name
-                    ))
-                    .OrderBy(r => r.Name)
-                    .ToListAsync();
+                var consulta = await db.Roles.ToListAsync();
+
+                var roles = consulta.Select(l => new RoleDto(
+                    l.Id,
+                    l.Name
+                ))
+                .OrderBy(l => l.Name)
+                .ToList();
 
                 return Results.Ok(roles);
             });
 
-            // Obtener un rol por ID
+            //Obtener role por ID
             group.MapGet("/{id}", async (int id, ExploreDb db) =>
             {
                 var role = await db.Roles
-                    .Where(r => r.Id == id)
-                    .Select(r => new RoleDto(
-                        r.Id,
-                        r.Name
+                    .Where(l => l.Id == id)
+                        .Select(l => new RoleDto(
+                            l.Id,
+                            l.Name
                     ))
                     .FirstOrDefaultAsync();
-
-                if (role == null)
-                    return Results.NotFound();
-
                 return Results.Ok(role);
-            });
-
-            // Modificar un rol
-            group.MapPut("/{id}", async (int id, ExploreDb db, ModifyRoleDto dto) =>
-            {
-                var errores = new Dictionary<string, string[]>();
-                if (string.IsNullOrWhiteSpace(dto.Name))
-                    errores["name"] = ["El nombre del rol es requerido."];
-
-                if (errores.Count > 0)
-                    return Results.BadRequest(errores);
-
-                var role = await db.Roles.FindAsync(id);
-                if (role == null)
-                    return Results.NotFound();
-
-                role.Name = dto.Name;
-                await db.SaveChangesAsync();
-
-                var dtoSalida = new RoleDto(
-                    role.Id,
-                    role.Name);
-
-                return Results.Ok(dtoSalida);
-            });
-
-            // Eliminar un rol
-            group.MapDelete("/{id}", async (int id, ExploreDb db) =>
-            {
-                var role = await db.Roles.FindAsync(id);
-                if (role == null)
-                    return Results.NotFound();
-
-                db.Roles.Remove(role);
-                await db.SaveChangesAsync();
-
-                return Results.NoContent();
             });
         }
     }
