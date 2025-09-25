@@ -9,5 +9,7 @@
         public string Clave { get; set; } = default!;
         public int RoleId { get; set; }
         public Role? Role { get; set; }
+        public int StatusId { get; set; }
+        public Status? Status { get; set; }
     }
 }
