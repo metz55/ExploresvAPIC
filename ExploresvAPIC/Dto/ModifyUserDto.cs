@@ -6,6 +6,7 @@
         string Name,
         string Apellido,
         string Email,
-        string Clave
+        string Clave,
+        int RoleId
     );
 }
