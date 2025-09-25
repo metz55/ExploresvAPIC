@@ -1,11 +1,11 @@
 ﻿namespace ExploresvAPIC.Dto
 {
-    public record eventDto
+    public record EventDto
     (
         int Id,
         string Title,
         string Description,
         DateTime Date,
-        int Images
+        List<ImageDto> Images //
     );
 }

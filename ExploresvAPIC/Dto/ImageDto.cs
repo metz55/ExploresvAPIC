@@ -7,6 +7,6 @@ namespace ExploresvAPIC.Dto
         int id,
         byte[] Datos,
         int EventId,
-        int TouristDestinationId
+        int? TouristDestinationId
     );
 }
