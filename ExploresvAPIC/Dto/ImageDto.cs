@@ -4,7 +4,7 @@
     (
         int Id,
         byte[] Datos,
-        int EventId,
-        int TouristDestinationId
+        int? EventId,
+        int? TouristDestinationId
     );
 }

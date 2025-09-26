@@ -12,14 +12,19 @@ namespace ExploresvAPIC.Models
         [MaxLength(100)]
         public string Location { get; set; } = default!;
         public string Hours { get; set; } = default!;
+
         public int CategoryId { get; set; }
         public Category? Category { get; set; }
-        public int DepartmentId { get; set; }
 
+        public int DepartmentId { get; set; }
         public Department? Department { get; set; }
+
         public int StatusId { get; set; }
         public Status? Status { get; set; }
-        public List<Image> Images { get; set; } 
-        
+
+        public List<Image> Images { get; set; } = new();
+
+        public List<Event> Events { get; set; } = new();
+
     }
 }

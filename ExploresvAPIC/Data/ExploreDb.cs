@@ -35,9 +35,22 @@ namespace ExploresvAPIC.Data
             {
                 e.Property(x => x.Title).IsRequired().HasMaxLength(100);
                 e.Property(x => x.Description).IsRequired().HasMaxLength(2500);
-                e.Property(x => x.Date).IsRequired();
-                e.HasMany(x => x.Images);
-                    
+                e.Property(x => x.Date).IsRequired()
+                    .HasColumnType("timestamp with time zone");
+
+
+                e.HasMany(x => x.Images)
+                    .WithOne(i => i.Event)
+                    .HasForeignKey(i => i.EventId)
+                    .OnDelete(DeleteBehavior.Restrict);
+
+                // 👇 NUEVO: relación obligatoria con TouristDestination
+                e.HasOne(x => x.TouristDestination)
+                    .WithMany(d => d.Events)
+                    .HasForeignKey(x => x.TouristDestinationId)
+                    .IsRequired()
+                    .OnDelete(DeleteBehavior.Restrict);
+
             });
 
             // Configuración para Favorite
@@ -62,6 +75,12 @@ namespace ExploresvAPIC.Data
                     .WithMany(x => x.Images)
                     .HasForeignKey(x => x.TouristDestinationId)
                     .OnDelete(DeleteBehavior.Restrict);
+
+                e.HasOne(x => x.Event)
+                    .WithMany(x => x.Images)
+                    .HasForeignKey(x => x.EventId)
+                    .OnDelete(DeleteBehavior.Restrict);
+
             });
 
             // Configuración para Role
