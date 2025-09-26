@@ -35,11 +35,22 @@ namespace ExploresvAPIC.Data
             {
                 e.Property(x => x.Title).IsRequired().HasMaxLength(100);
                 e.Property(x => x.Description).IsRequired().HasMaxLength(2500);
-                e.Property(x => x.Date).IsRequired();
+                e.Property(x => x.Date).IsRequired()
+                    .HasColumnType("timestamp with time zone");
+
+
                 e.HasMany(x => x.Images)
-                    .WithOne(x => x.Event)
-                    .HasForeignKey(x => x.EventId)
+                    .WithOne(i => i.Event)
+                    .HasForeignKey(i => i.EventId)
                     .OnDelete(DeleteBehavior.Restrict);
+
+                // 👇 NUEVO: relación obligatoria con TouristDestination
+                e.HasOne(x => x.TouristDestination)
+                    .WithMany(d => d.Events)
+                    .HasForeignKey(x => x.TouristDestinationId)
+                    .IsRequired()
+                    .OnDelete(DeleteBehavior.Restrict);
+
             });
 
             // Configuración para Favorite
@@ -59,14 +70,17 @@ namespace ExploresvAPIC.Data
             modelBuilder.Entity<Image>(e =>
             {
                 e.Property(x => x.Datos).IsRequired();
-                e.HasOne(x => x.Event)
-                    .WithMany(x => x.Images)
-                    .HasForeignKey(x => x.EventId)
-                    .OnDelete(DeleteBehavior.Restrict);
+                
                 e.HasOne(x => x.TouristDestination)
                     .WithMany(x => x.Images)
                     .HasForeignKey(x => x.TouristDestinationId)
                     .OnDelete(DeleteBehavior.Restrict);
+
+                e.HasOne(x => x.Event)
+                    .WithMany(x => x.Images)
+                    .HasForeignKey(x => x.EventId)
+                    .OnDelete(DeleteBehavior.Restrict);
+
             });
 
             // Configuración para Role
@@ -100,10 +114,7 @@ namespace ExploresvAPIC.Data
                     .WithMany()
                     .HasForeignKey(x => x.StatusId)
                     .OnDelete(DeleteBehavior.Restrict);
-                e.HasOne(x => x.Event)
-                    .WithMany()
-                    .HasForeignKey(x => x.EventId)
-                    .OnDelete(DeleteBehavior.Restrict);
+                
             });
 
             // Configuración para User
