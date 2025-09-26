@@ -4,6 +4,8 @@
     (
         string Title,
         string Description,
-        DateTime Date
+        DateTimeOffset Date,
+        int TouristDestinationId, 
+        List<byte[]> Images
     );
 }
