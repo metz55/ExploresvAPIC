@@ -83,6 +83,64 @@ namespace ExploresvAPIC.Endpoints
 
                 return Results.Ok(events);
             });
+
+            //Obtener por ID
+            group.MapGet("/{id}", async (int id, ExploreDb db) =>
+            {
+                var evento = await db.Events
+                    .Where(l => l.Id == id)
+                    .Select(l => new EventDto(
+                        l.Id,
+                        l.Title,
+                        l.Description,
+                        l.Date,
+                        l.Images.Select(i => new ImageDto(
+                            i.Id,
+                            i.Datos,
+                            i.EventId,
+                            i.TouristDestinationId
+                        )).ToList()
+                    ))
+                    .FirstOrDefaultAsync();
+
+                if (evento is null)
+                    return Results.NotFound();
+
+                return Results.Ok(evento);
+            });
+
+            //Actualizar Event
+            group.MapPut("/{id}", async (int id, ModifyEventDto dto, ExploreDb db) =>
+            {
+                var evento = await db.Events.FindAsync(id);
+
+                if (evento is null)
+                    return Results.NotFound();
+
+                // Validaciones simples
+                var errores = new Dictionary<string, string[]>();
+
+                if (string.IsNullOrWhiteSpace(dto.Title))
+                    errores["title"] = ["El título es requerido."];
+
+                if (string.IsNullOrWhiteSpace(dto.Description))
+                    errores["description"] = ["La descripción es requerida."];
+
+                if (dto.Date == default)
+                    errores["date"] = ["La fecha es requerida."];
+
+                if (errores.Any())
+                    return Results.BadRequest(errores);
+
+                // Actualizamos propiedades
+                evento.Title = dto.Title;
+                evento.Description = dto.Description;
+                evento.Date = dto.Date;
+
+                await db.SaveChangesAsync();
+
+                return Results.NoContent();
+            });
         }
     }
 }

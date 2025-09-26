@@ -1,6 +1,4 @@
-﻿using ExploresvAPIC.Models;
-
-namespace ExploresvAPIC.Dto
+﻿namespace ExploresvAPIC.Dto
 {
     public record ImageDto
     (

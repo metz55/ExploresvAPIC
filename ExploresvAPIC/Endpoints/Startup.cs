@@ -7,6 +7,7 @@
             RoleEndpoints.Add(app);
             StatusEndpoints.Add(app);
             UserEndpoints.Add(app);
+            EventEndpoints.Add(app);
         }
     }
 }
