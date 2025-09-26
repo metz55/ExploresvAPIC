@@ -19,8 +19,7 @@ namespace ExploresvAPIC.Models
         public Department? Department { get; set; }
         public int StatusId { get; set; }
         public Status? Status { get; set; }
-        public List<Image> Images { get; set; } = new List<Image>();
-        public int? EventId { get; set; } // Opcional
-        public Event? Event { get; set; }
+        public List<Image> Images { get; set; } 
+        
     }
 }

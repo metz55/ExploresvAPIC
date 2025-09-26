@@ -13,7 +13,7 @@
         string DepartmentName,
         int StatusId,
         string StatusName,
-        List<ImageDto> Images,
-        int? EventId
+        List<ImageDto> Images
+        
     );
 }

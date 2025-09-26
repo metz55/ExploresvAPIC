@@ -9,8 +9,8 @@
         int CategoryId,
         int DepartmentId,
         int StatusId,
-        List<IFormFile>? Images,
-        int? EventId // Opcional
+        List<string>? Images // Lista de bytes en lugar de IFormFile
+        
 
 
     );
