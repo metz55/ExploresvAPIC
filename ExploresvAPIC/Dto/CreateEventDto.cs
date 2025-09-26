@@ -4,7 +4,8 @@
     (
         string Title,
         string Description,
-        DateTime Date,
-        List<byte[]> Images //Chat
+        DateTimeOffset Date,
+        int TouristDestinationId, 
+        List<byte[]> Images
     );
 }
