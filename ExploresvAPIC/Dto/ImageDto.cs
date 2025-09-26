@@ -4,9 +4,9 @@ namespace ExploresvAPIC.Dto
 {
     public record ImageDto
     (
-        int id,
+        int Id,
         byte[] Datos,
-        int EventId,
+        int? EventId,
         int TouristDestinationId
     );
 }
