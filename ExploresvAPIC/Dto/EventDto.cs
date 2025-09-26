@@ -5,7 +5,8 @@
         int Id,
         string Title,
         string Description,
-        DateTime Date,
-        List<ImageDto> Images //
+        DateTimeOffset Date,
+        int TouristDestinationId,
+        List<ImageDto> Images
     );
 }
