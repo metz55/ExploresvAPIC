@@ -18,6 +18,9 @@ namespace ExploresvAPIC.Endpoints
                 if (string.IsNullOrWhiteSpace(dto.Name))
                     errores["name"] = ["El nombre de estado es requerido."];
 
+                if (errores.Count > 0)
+                    return Results.BadRequest(errores);
+
                 var entity = new Status
                 {
                     Name = dto.Name

@@ -4,6 +4,7 @@
     (
         string Title,
         string Description,
-        DateTime Date
+        DateTime Date,
+        List<byte[]> Images //Chat
     );
 }

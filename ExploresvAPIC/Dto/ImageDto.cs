@@ -1,12 +1,10 @@
-﻿using ExploresvAPIC.Models;
-
-namespace ExploresvAPIC.Dto
+﻿namespace ExploresvAPIC.Dto
 {
     public record ImageDto
     (
         int Id,
         byte[] Datos,
-        int? EventId,
+        int EventId,
         int TouristDestinationId
     );
 }
