@@ -36,10 +36,8 @@ namespace ExploresvAPIC.Data
                 e.Property(x => x.Title).IsRequired().HasMaxLength(100);
                 e.Property(x => x.Description).IsRequired().HasMaxLength(2500);
                 e.Property(x => x.Date).IsRequired();
-                e.HasMany(x => x.Images)
-                    .WithOne(x => x.Event)
-                    .HasForeignKey(x => x.EventId)
-                    .OnDelete(DeleteBehavior.Restrict);
+                e.HasMany(x => x.Images);
+                    
             });
 
             // Configuración para Favorite
@@ -59,10 +57,7 @@ namespace ExploresvAPIC.Data
             modelBuilder.Entity<Image>(e =>
             {
                 e.Property(x => x.Datos).IsRequired();
-                e.HasOne(x => x.Event)
-                    .WithMany(x => x.Images)
-                    .HasForeignKey(x => x.EventId)
-                    .OnDelete(DeleteBehavior.Restrict);
+                
                 e.HasOne(x => x.TouristDestination)
                     .WithMany(x => x.Images)
                     .HasForeignKey(x => x.TouristDestinationId)
@@ -100,10 +95,7 @@ namespace ExploresvAPIC.Data
                     .WithMany()
                     .HasForeignKey(x => x.StatusId)
                     .OnDelete(DeleteBehavior.Restrict);
-                e.HasOne(x => x.Event)
-                    .WithMany()
-                    .HasForeignKey(x => x.EventId)
-                    .OnDelete(DeleteBehavior.Restrict);
+                
             });
 
             // Configuración para User

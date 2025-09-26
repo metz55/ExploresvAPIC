@@ -8,6 +8,9 @@
             StatusEndpoints.Add(app);
             UserEndpoints.Add(app);
             EventEndpoints.Add(app);
+            DepartmentEndpoint.Add(app);
+            CategoryEndpoint.Add(app);
+            TouristDestinationEndpoints.Add(app);
         }
     }
 }

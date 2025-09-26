@@ -8,9 +8,12 @@
         string Location,
         string Hours,
         int CategoryId,
+        string CategoryName,
         int DepartmentId,
+        string DepartmentName,
         int StatusId,
-        List<ImageDto> Images,
-        int EventId
+        string StatusName,
+        List<ImageDto> Images
+        
     );
 }

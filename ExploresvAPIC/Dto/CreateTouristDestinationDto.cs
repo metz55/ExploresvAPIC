@@ -2,10 +2,16 @@
 {
     public record CreateTouristDestinationDto
     (
-        string Title,
+         string Title,
         string Description,
         string Location,
         string Hours,
-        List<ImageDto> Images
+        int CategoryId,
+        int DepartmentId,
+        int StatusId,
+        List<string>? Images // Lista de bytes en lugar de IFormFile
+        
+
+
     );
 }

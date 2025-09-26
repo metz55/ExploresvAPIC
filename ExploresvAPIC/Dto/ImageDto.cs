@@ -2,9 +2,9 @@
 {
     public record ImageDto
     (
-        int id,
+        int Id,
         byte[] Datos,
         int EventId,
-        int? TouristDestinationId
+        int TouristDestinationId
     );
 }
