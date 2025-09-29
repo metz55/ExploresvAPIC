@@ -74,11 +74,13 @@ namespace ExploresvAPIC.Data
                 e.HasOne(x => x.TouristDestination)
                     .WithMany(x => x.Images)
                     .HasForeignKey(x => x.TouristDestinationId)
+                    .IsRequired(false) //Asegura que sea opcional
                     .OnDelete(DeleteBehavior.Restrict);
 
                 e.HasOne(x => x.Event)
                     .WithMany(x => x.Images)
                     .HasForeignKey(x => x.EventId)
+                    .IsRequired(false) //Asegura que sea opcional
                     .OnDelete(DeleteBehavior.Restrict);
 
             });

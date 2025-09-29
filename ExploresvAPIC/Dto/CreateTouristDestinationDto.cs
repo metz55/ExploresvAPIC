@@ -10,8 +10,5 @@
         int DepartmentId,
         int StatusId,
         List<string>? Images // Lista de bytes en lugar de IFormFile
-        
-
-
     );
 }

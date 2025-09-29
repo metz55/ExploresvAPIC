@@ -99,7 +99,7 @@ namespace ExploresvAPIC.Endpoints
                     new List<EventDto>() 
                 );
 
-                return Results.Created($"/touristDestination/{entity.Id}", dtoSalida);
+                return Results.Created($"/api/touristDestination/{entity.Id}", dtoSalida);
             });
 
             group.MapGet("/", async (ExploreDb db) =>
