@@ -18,10 +18,13 @@ namespace ExploresvAPIC.Endpoints
                 var errores = new Dictionary<string, string[]>();
                 if (string.IsNullOrWhiteSpace(dto.Title))
                     errores["title"] = ["El título es requerido."];
+
                 if (string.IsNullOrWhiteSpace(dto.Description))
                     errores["description"] = ["La descripción es requerida."];
+
                 if (string.IsNullOrWhiteSpace(dto.Location))
                     errores["location"] = ["La ubicación es requerida."];
+
                 if (string.IsNullOrWhiteSpace(dto.Hours))
                     errores["hours"] = ["El horario es requerido."];
 
