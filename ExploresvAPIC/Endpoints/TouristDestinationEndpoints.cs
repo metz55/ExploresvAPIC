@@ -18,10 +18,13 @@ namespace ExploresvAPIC.Endpoints
                 var errores = new Dictionary<string, string[]>();
                 if (string.IsNullOrWhiteSpace(dto.Title))
                     errores["title"] = ["El título es requerido."];
+
                 if (string.IsNullOrWhiteSpace(dto.Description))
                     errores["description"] = ["La descripción es requerida."];
+
                 if (string.IsNullOrWhiteSpace(dto.Location))
                     errores["location"] = ["La ubicación es requerida."];
+
                 if (string.IsNullOrWhiteSpace(dto.Hours))
                     errores["hours"] = ["El horario es requerido."];
 
@@ -96,9 +99,10 @@ namespace ExploresvAPIC.Endpoints
                     new List<EventDto>() 
                 );
 
-                return Results.Created($"/touristDestination/{entity.Id}", dtoSalida);
+                return Results.Created($"/api/touristDestination/{entity.Id}", dtoSalida);
             });
 
+            // Obtener todos los destinos con sus eventos
             group.MapGet("/", async (ExploreDb db) =>
             {
                 
