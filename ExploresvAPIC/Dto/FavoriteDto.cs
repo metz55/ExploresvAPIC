@@ -3,7 +3,7 @@
     public record FavoriteDto
     (
         int Id,
-        int userId,
-        int touristDestinationId
+        int UserId,
+        int TouristDestinationId
     );
 }

@@ -102,6 +102,7 @@ namespace ExploresvAPIC.Endpoints
                 return Results.Created($"/api/touristDestination/{entity.Id}", dtoSalida);
             });
 
+            // Obtener todos los destinos con sus eventos
             group.MapGet("/", async (ExploreDb db) =>
             {
                 

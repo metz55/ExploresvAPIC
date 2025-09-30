@@ -46,14 +46,41 @@ namespace ExploresvAPIC.Endpoints
             group.MapGet("/", async (ExploreDb db) =>
             {
                 var consulta = await db.Favorities
-                    .Include(u => u.User)
-                    .Include(u => u.TouristDestination)
+                    .Include(f => f.User)
+                    .Include(f => f.TouristDestination)
+                        .ThenInclude(td => td.Category)
+                    .Include(f => f.TouristDestination)
+                        .ThenInclude(td => td.Department)
+                    .Include(f => f.TouristDestination)
+                        .ThenInclude(td => td.Status)
+                    .Include(f => f.TouristDestination)
+                        .ThenInclude(td => td.Images)
                     .ToListAsync();
 
-                var favorities = consulta.Select(l => new FavoriteDto(
+                var favorities = consulta.Select(l => new FavoriteWithTouristDestinationDto(
                     l.Id,
                     l.UserId,
-                    l.TouristDestinationId
+                    l.TouristDestinationId,
+                    new TouristDestinationDto(
+                        l.TouristDestination.Id,
+                        l.TouristDestination.Title,
+                        l.TouristDestination.Description,
+                        l.TouristDestination.Location,
+                        l.TouristDestination.Hours,
+                        l.TouristDestination.CategoryId,
+                        l.TouristDestination.Category.Name,
+                        l.TouristDestination.DepartmentId,
+                        l.TouristDestination.Department.Name,
+                        l.TouristDestination.StatusId,
+                        l.TouristDestination.Status.Name,
+                        l.TouristDestination.Images.Select(img => new ImageDto(
+                            img.Id,
+                            img.Datos,
+                            img.EventId,
+                            img.TouristDestinationId
+                        )).ToList(),
+                        new List<EventDto>()
+                    )
                 ))
                 .OrderBy(l => l.Id)
                 .ToList();

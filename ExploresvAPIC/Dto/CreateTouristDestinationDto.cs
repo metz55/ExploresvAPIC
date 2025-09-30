@@ -2,7 +2,7 @@
 {
     public record CreateTouristDestinationDto
     (
-         string Title,
+        string Title,
         string Description,
         string Location,
         string Hours,
