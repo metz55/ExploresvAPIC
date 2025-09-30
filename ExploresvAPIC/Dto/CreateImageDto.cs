@@ -2,6 +2,8 @@
 {
     public record CreateImageDto
     (
-        byte[] Datos
+        byte[] Datos,
+        int? EventId,
+        int? TouristDestinationId
     );
 }
