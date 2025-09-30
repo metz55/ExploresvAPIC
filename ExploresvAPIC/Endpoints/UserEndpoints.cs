@@ -68,8 +68,8 @@ namespace ExploresvAPIC.Endpoints
             });
 
             //Obtener todos los Usuarios
-            group.MapGet("/", async (ExploreDb db) => {
-
+            group.MapGet("/", async (ExploreDb db) =>
+            {
                 var consulta = await db.Users
                     .Include(u => u.Role)
                     .Include(u => u.Status)
