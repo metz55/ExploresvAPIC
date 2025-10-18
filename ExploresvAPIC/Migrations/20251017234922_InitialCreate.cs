@@ -39,21 +39,6 @@ namespace ExploresvAPIC.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Events",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "integer", nullable: false)
-                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    Title = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: false),
-                    Description = table.Column<string>(type: "character varying(2500)", maxLength: 2500, nullable: false),
-                    Date = table.Column<DateTime>(type: "timestamp with time zone", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Events", x => x.Id);
-                });
-
-            migrationBuilder.CreateTable(
                 name: "Roles",
                 columns: table => new
                 {
@@ -91,8 +76,7 @@ namespace ExploresvAPIC.Migrations
                     Hours = table.Column<string>(type: "text", nullable: false),
                     CategoryId = table.Column<int>(type: "integer", nullable: false),
                     DepartmentId = table.Column<int>(type: "integer", nullable: false),
-                    StatusId = table.Column<int>(type: "integer", nullable: false),
-                    EventId = table.Column<int>(type: "integer", nullable: false)
+                    StatusId = table.Column<int>(type: "integer", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -107,12 +91,6 @@ namespace ExploresvAPIC.Migrations
                         name: "FK_TouristDestinations_Departaments_DepartmentId",
                         column: x => x.DepartmentId,
                         principalTable: "Departaments",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
-                    table.ForeignKey(
-                        name: "FK_TouristDestinations_Events_EventId",
-                        column: x => x.EventId,
-                        principalTable: "Events",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
@@ -154,26 +132,21 @@ namespace ExploresvAPIC.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Images",
+                name: "Events",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    Datos = table.Column<byte[]>(type: "bytea", nullable: false),
-                    EventId = table.Column<int>(type: "integer", nullable: false),
-                    TouristDestinationId = table.Column<int>(type: "integer", nullable: true)
+                    Title = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: false),
+                    Description = table.Column<string>(type: "character varying(2500)", maxLength: 2500, nullable: false),
+                    Date = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: false),
+                    TouristDestinationId = table.Column<int>(type: "integer", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Images", x => x.Id);
+                    table.PrimaryKey("PK_Events", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Images_Events_EventId",
-                        column: x => x.EventId,
-                        principalTable: "Events",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
-                    table.ForeignKey(
-                        name: "FK_Images_TouristDestinations_TouristDestinationId",
+                        name: "FK_Events_TouristDestinations_TouristDestinationId",
                         column: x => x.TouristDestinationId,
                         principalTable: "TouristDestinations",
                         principalColumn: "Id",
@@ -206,6 +179,38 @@ namespace ExploresvAPIC.Migrations
                         onDelete: ReferentialAction.Restrict);
                 });
 
+            migrationBuilder.CreateTable(
+                name: "Images",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    Datos = table.Column<byte[]>(type: "bytea", nullable: false),
+                    EventId = table.Column<int>(type: "integer", nullable: true),
+                    TouristDestinationId = table.Column<int>(type: "integer", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Images", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Images_Events_EventId",
+                        column: x => x.EventId,
+                        principalTable: "Events",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_Images_TouristDestinations_TouristDestinationId",
+                        column: x => x.TouristDestinationId,
+                        principalTable: "TouristDestinations",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Events_TouristDestinationId",
+                table: "Events",
+                column: "TouristDestinationId");
+
             migrationBuilder.CreateIndex(
                 name: "IX_Favorities_TouristDestinationId",
                 table: "Favorities",
@@ -237,11 +242,6 @@ namespace ExploresvAPIC.Migrations
                 column: "DepartmentId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_TouristDestinations_EventId",
-                table: "TouristDestinations",
-                column: "EventId");
-
-            migrationBuilder.CreateIndex(
                 name: "IX_TouristDestinations_StatusId",
                 table: "TouristDestinations",
                 column: "StatusId");
@@ -270,19 +270,19 @@ namespace ExploresvAPIC.Migrations
                 name: "Users");
 
             migrationBuilder.DropTable(
-                name: "TouristDestinations");
+                name: "Events");
 
             migrationBuilder.DropTable(
                 name: "Roles");
+
+            migrationBuilder.DropTable(
+                name: "TouristDestinations");
 
             migrationBuilder.DropTable(
                 name: "Categories");
 
             migrationBuilder.DropTable(
                 name: "Departaments");
-
-            migrationBuilder.DropTable(
-                name: "Events");
 
             migrationBuilder.DropTable(
                 name: "Status");
