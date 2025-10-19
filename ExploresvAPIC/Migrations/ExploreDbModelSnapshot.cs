@@ -66,7 +66,7 @@ namespace ExploresvAPIC.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
-                    b.Property<DateTime>("Date")
+                    b.Property<DateTimeOffset>("Date")
                         .HasColumnType("timestamp with time zone");
 
                     b.Property<string>("Description")
@@ -79,7 +79,12 @@ namespace ExploresvAPIC.Migrations
                         .HasMaxLength(100)
                         .HasColumnType("character varying(100)");
 
+                    b.Property<int>("TouristDestinationId")
+                        .HasColumnType("integer");
+
                     b.HasKey("Id");
+
+                    b.HasIndex("TouristDestinationId");
 
                     b.ToTable("Events");
                 });
@@ -119,7 +124,7 @@ namespace ExploresvAPIC.Migrations
                         .IsRequired()
                         .HasColumnType("bytea");
 
-                    b.Property<int>("EventId")
+                    b.Property<int?>("EventId")
                         .HasColumnType("integer");
 
                     b.Property<int?>("TouristDestinationId")
@@ -187,9 +192,6 @@ namespace ExploresvAPIC.Migrations
                         .HasMaxLength(2500)
                         .HasColumnType("character varying(2500)");
 
-                    b.Property<int>("EventId")
-                        .HasColumnType("integer");
-
                     b.Property<string>("Hours")
                         .IsRequired()
                         .HasColumnType("text");
@@ -212,8 +214,6 @@ namespace ExploresvAPIC.Migrations
                     b.HasIndex("CategoryId");
 
                     b.HasIndex("DepartmentId");
-
-                    b.HasIndex("EventId");
 
                     b.HasIndex("StatusId");
 
@@ -259,6 +259,17 @@ namespace ExploresvAPIC.Migrations
                     b.ToTable("Users");
                 });
 
+            modelBuilder.Entity("ExploresvAPIC.Models.Event", b =>
+                {
+                    b.HasOne("ExploresvAPIC.Models.TouristDestination", "TouristDestination")
+                        .WithMany("Events")
+                        .HasForeignKey("TouristDestinationId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("TouristDestination");
+                });
+
             modelBuilder.Entity("ExploresvAPIC.Models.Favorite", b =>
                 {
                     b.HasOne("ExploresvAPIC.Models.TouristDestination", "TouristDestination")
@@ -283,8 +294,7 @@ namespace ExploresvAPIC.Migrations
                     b.HasOne("ExploresvAPIC.Models.Event", "Event")
                         .WithMany("Images")
                         .HasForeignKey("EventId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
+                        .OnDelete(DeleteBehavior.Restrict);
 
                     b.HasOne("ExploresvAPIC.Models.TouristDestination", "TouristDestination")
                         .WithMany("Images")
@@ -310,12 +320,6 @@ namespace ExploresvAPIC.Migrations
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
-                    b.HasOne("ExploresvAPIC.Models.Event", "Event")
-                        .WithMany()
-                        .HasForeignKey("EventId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
                     b.HasOne("ExploresvAPIC.Models.Status", "Status")
                         .WithMany()
                         .HasForeignKey("StatusId")
@@ -325,8 +329,6 @@ namespace ExploresvAPIC.Migrations
                     b.Navigation("Category");
 
                     b.Navigation("Department");
-
-                    b.Navigation("Event");
 
                     b.Navigation("Status");
                 });
@@ -357,6 +359,8 @@ namespace ExploresvAPIC.Migrations
 
             modelBuilder.Entity("ExploresvAPIC.Models.TouristDestination", b =>
                 {
+                    b.Navigation("Events");
+
                     b.Navigation("Images");
                 });
 #pragma warning restore 612, 618
